@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from colorama import Fore, Style
+from colorama import Fore, Back, Style
 
 from lib.api import get_daily, get_kfc_v_wo50, get_public_holidays
 
@@ -79,9 +79,16 @@ def main():
     if weekdays == 3:
         output.append(f"\n{Fore.GREEN}--疯狂星期四--{Style.RESET_ALL}\n{kfc['data']}")
 
+    output.append(f"\n{Back.CYAN}@yunus0906{Style.RESET_ALL} https://github.com/yunus0906/slack-fish")
     return "\n".join(output)
 
 def main_for_html():
+
+    GITHUB_BUTTON = """
+        <!-- Place this tag where you want the button to render. -->
+        <a class="github-button" href="https://github.com/yunus0906/slack-fish" data-icon="octicon-star" data-show-count="true" aria-label="Star yunus0906/slack-fish on GitHub">slack-fish</a>
+        """
+
     output = []
     
     current_date, current_weekday, weekdays = get_current_date()
@@ -104,4 +111,7 @@ def main_for_html():
     if weekdays == 3:
         output.append(f"<h3 style='color: green;'>--疯狂星期四--</h3><p>{kfc['data']}</p>")
 
+    output.append(
+        f"{GITHUB_BUTTON}"
+    )
     return "".join(output)
