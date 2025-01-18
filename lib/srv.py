@@ -1,14 +1,18 @@
 from datetime import datetime, timedelta
 from colorama import Fore, Back, Style
+import pytz
 
 from lib.api import get_daily, get_kfc_v_wo50, get_public_holidays
 
+# TODO 设置时区, 需要改成获取用户时区
+tz = pytz.timezone('Asia/Shanghai')
+date_now = datetime.now(tz)
 
 def get_current_date():
     """
     获取当前日期、星期几、星期几的汉字
     """
-    now = datetime.now()
+    now = date_now
     weekdays = ["星期一", "星期二", "星期三", "星期四", "星期五🤩", "星期六🥳", "星期日🥳"]
     return now.strftime("%Y年%m月%d日"), weekdays[now.weekday()], now.weekday()
 
@@ -16,7 +20,7 @@ def get_days_until(target_date):
     """
     获取距离目标日期还有多少天
     """
-    today = datetime.now().date()
+    today = date_now.date()
     delta = target_date - today
     return delta.days
 
@@ -25,7 +29,7 @@ def get_next_public_holidays():
     获取今年、明年的公共节假日
     """
     # 获取今年
-    year = datetime.now().year
+    year = date_now.year
     # 获取今年的公共节假日
     this_year = get_public_holidays(year, 'CN')
     # 获取明年的公共节假日
@@ -33,7 +37,7 @@ def get_next_public_holidays():
     # 合并两个列表
     holidays = this_year + next_year
     # 获取今天
-    today = datetime.now().date()
+    today = date_now.date()
     # 获取明年的今天日期
     next_year_yesterday = today + timedelta(days=100) # days表示天数以内的假期
     # 保留【今天之后】到【明年昨天之前】的节假日
@@ -45,7 +49,7 @@ def get_greeting():
     """
     获取问候语
     """
-    current = datetime.now().hour
+    current = date_now.hour
     if 5 <= current < 12:
         return "上午好"
     elif 12 <= current < 18:
@@ -65,7 +69,7 @@ def main():
     output.append(f"{greeting}！摸鱼人！工作再累，一定不要忘记摸鱼哦！\n有事没事起身去茶水间，去厕所，去廊道走走别老在工位上坐着，钱是老板的，但命是自己的🏃‍♀️‍➡️\n")
 
     # 计算节日倒计时
-    saturday = datetime.now() + timedelta((5 - datetime.now().weekday()) % 7)
+    saturday = date_now + timedelta((5 - date_now.weekday()) % 7)
     output.append(f"距离【周六】还有：{get_days_until(saturday.date())}天")
 
     holidays = get_next_public_holidays()
@@ -97,7 +101,7 @@ def main_for_html():
     greeting = get_greeting()
     output.append(f"<p>{greeting}！摸鱼人！工作再累，一定不要忘记摸鱼哦！<br>有事没事起身去茶水间，去厕所，去廊道走走别老在工位上坐着，钱是老板的，但命是自己的🏃‍♀️‍➡️</p>")
 
-    saturday = datetime.now() + timedelta((5 - datetime.now().weekday()) % 7)
+    saturday = date_now + timedelta((5 - date_now.weekday()) % 7)
     output.append(f"<p>距离【周六】还有：{get_days_until(saturday.date())}天</p>")
 
     holidays = get_next_public_holidays()
